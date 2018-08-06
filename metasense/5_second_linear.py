@@ -306,7 +306,8 @@ def plot_mean_squared_error( startTimeStep, endTimeStep, round, location, board 
     
  
 
-plot_mean_squared_error(0, 10, 1, 'donovan', 17)
+plot_mean_squared_error(0, 20, 1, 'donovan', 17)
+plot_mean_squared_error(0, 10, 3, 'elcajon', 18)
 #plot_mean_squared_error(0, 100, 1, 'elcajon', 11)
 
 #for time in range(4):
