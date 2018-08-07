@@ -36,15 +36,15 @@ def random_forest_cross_loc_time_step( timeStep, round1, location1, round2, loca
     trainX = train[TIME_STEP::, NO2_INDEX]
     trainX = np.expand_dims(trainX, axis=1)
     trainX = np.concatenate( (trainX, np.expand_dims(train[TIME_STEP::, O3_INDEX], axis=1)), axis=1)
-  #  trainX = np.concatenate( (trainX, np.expand_dims(train[TIME_STEP::, CO_INDEX], axis=1)), axis=1)
-  #  trainX = np.concatenate( (trainX, np.expand_dims(train[TIME_STEP::, TEMP_INDEX], axis=1)), axis=1)
-  #  trainX = np.concatenate( (trainX, np.expand_dims(train[TIME_STEP::, HUM_INDEX], axis=1)), axis=1)
+    trainX = np.concatenate( (trainX, np.expand_dims(train[TIME_STEP::, CO_INDEX], axis=1)), axis=1)
+    trainX = np.concatenate( (trainX, np.expand_dims(train[TIME_STEP::, TEMP_INDEX], axis=1)), axis=1)
+    trainX = np.concatenate( (trainX, np.expand_dims(train[TIME_STEP::, HUM_INDEX], axis=1)), axis=1)
     for index in range(TIME_STEP):
         trainX = np.concatenate( (trainX, np.expand_dims(train[TIME_STEP::, NO2_INDEX + (index + 1)*8], axis=1)), axis=1)
         trainX = np.concatenate( (trainX, np.expand_dims(train[TIME_STEP::, O3_INDEX + (index + 1)*8], axis=1)), axis=1)
-   #     trainX = np.concatenate( (trainX, np.expand_dims(train[TIME_STEP::, CO_INDEX + (index + 1)*8], axis=1)), axis=1)
-   #     trainX = np.concatenate( (trainX, np.expand_dims(train[TIME_STEP::, TEMP_INDEX + (index + 1)*8], axis=1)), axis=1)
-  #      trainX = np.concatenate( (trainX, np.expand_dims(train[TIME_STEP::, HUM_INDEX + (index + 1)*8], axis=1)), axis=1)
+        trainX = np.concatenate( (trainX, np.expand_dims(train[TIME_STEP::, CO_INDEX + (index + 1)*8], axis=1)), axis=1)
+        trainX = np.concatenate( (trainX, np.expand_dims(train[TIME_STEP::, TEMP_INDEX + (index + 1)*8], axis=1)), axis=1)
+        trainX = np.concatenate( (trainX, np.expand_dims(train[TIME_STEP::, HUM_INDEX + (index + 1)*8], axis=1)), axis=1)
     trainY = train[TIME_STEP::,EPA_NO2_INDEX]
     trainY = np.expand_dims(trainY, axis=1)
     trainY = np.concatenate( (trainY, np.expand_dims(train[TIME_STEP::, EPA_O3_INDEX], axis=1)), axis=1) 
@@ -53,15 +53,15 @@ def random_forest_cross_loc_time_step( timeStep, round1, location1, round2, loca
     testX = test[TIME_STEP::, NO2_INDEX]
     testX = np.expand_dims(testX, axis=1)
     testX = np.concatenate( (testX, np.expand_dims(test[TIME_STEP::, O3_INDEX], axis=1)), axis=1)
-    #testX = np.concatenate( (testX, np.expand_dims(test[TIME_STEP::, CO_INDEX], axis=1)), axis=1)
-    #testX = np.concatenate( (testX, np.expand_dims(test[TIME_STEP::, TEMP_INDEX], axis=1)), axis=1)
-   # testX = np.concatenate( (testX, np.expand_dims(test[TIME_STEP::, HUM_INDEX], axis=1)), axis=1)
+    testX = np.concatenate( (testX, np.expand_dims(test[TIME_STEP::, CO_INDEX], axis=1)), axis=1)
+    testX = np.concatenate( (testX, np.expand_dims(test[TIME_STEP::, TEMP_INDEX], axis=1)), axis=1)
+    testX = np.concatenate( (testX, np.expand_dims(test[TIME_STEP::, HUM_INDEX], axis=1)), axis=1)
     for index in range(TIME_STEP):
         testX = np.concatenate( (testX, np.expand_dims(test[TIME_STEP::, NO2_INDEX + (index + 1)*8], axis=1)), axis=1)
         testX = np.concatenate( (testX, np.expand_dims(test[TIME_STEP::, O3_INDEX + (index + 1)*8], axis=1)), axis=1)
-     #   testX = np.concatenate( (testX, np.expand_dims(test[TIME_STEP::, CO_INDEX + (index + 1)*8], axis=1)), axis=1)
-     #   testX = np.concatenate( (testX, np.expand_dims(test[TIME_STEP::, TEMP_INDEX + (index + 1)*8], axis=1)), axis=1)
-    #    testX = np.concatenate( (testX, np.expand_dims(test[TIME_STEP::, HUM_INDEX + (index + 1)*8], axis=1)), axis=1)
+        testX = np.concatenate( (testX, np.expand_dims(test[TIME_STEP::, CO_INDEX + (index + 1)*8], axis=1)), axis=1)
+        testX = np.concatenate( (testX, np.expand_dims(test[TIME_STEP::, TEMP_INDEX + (index + 1)*8], axis=1)), axis=1)
+        testX = np.concatenate( (testX, np.expand_dims(test[TIME_STEP::, HUM_INDEX + (index + 1)*8], axis=1)), axis=1)
     testY = test[TIME_STEP::, EPA_NO2_INDEX]
     testY = np.expand_dims(testY, axis=1)
     testY = np.concatenate( (testY, np.expand_dims(test[TIME_STEP::, EPA_O3_INDEX], axis=1)), axis=1) 
