@@ -282,7 +282,7 @@ def plot_mean_squared_error( startTimeStep, endTimeStep, round, location, board 
  
 
 start = 0
-end = 30
+end = 10
 minno2Steps = []
 mino3Steps = []
 
@@ -376,15 +376,3 @@ print( "no2 as follows" )
 print(minno2Steps)
 print( "mean = " + str(np.mean(minno2Steps)) )
 print( "median = " + str(np.median(minno2Steps)) )
- 
-
-
-
-
-
-
-
-
-
-
-
