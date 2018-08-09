@@ -1,6 +1,6 @@
 import metasense
 import data
-from data import load5Second
+from data import load
 import matching_epa
 from matching_epa import match5Second
 import numpy as np
@@ -8,7 +8,8 @@ import matplotlib
 matplotlib.use('Agg')
 from matplotlib import pyplot as plt
 
-#data = load5Second(1, 'donovan', 17)
+data = load( 1, 'donovan', 17)
+print(data[0])
 #train = data[0]
 #test = data[1]
 #epa = data[2]
@@ -29,6 +30,6 @@ from matplotlib import pyplot as plt
 #data = match5Second( 1, 'elcajon', 13)
 #print("el cajon, round 3, board 15")
 #data = match5Second( 3, 'elcajon', 15)
-print("shafter, round 3, board 21")
-data = match5Second( 3, 'shafter', 21)
+#print("shafter, round 3, board 21")
+#data = match5Second( 3, 'shafter', 21)
 
