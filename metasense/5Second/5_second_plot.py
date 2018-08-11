@@ -1,7 +1,7 @@
 import metasense
-import data
+import measense.data
 import os, sys
-from data import load5Second
+from metasense.data import load5Second
 import numpy as np
 import matplotlib
 matplotlib.use('Agg')

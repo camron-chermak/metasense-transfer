@@ -1,7 +1,7 @@
 import metasense
-import data
+import metasense.data
+from metasense.data import loadMatrix
 import os, sys
-from data import loadMatrix
 import numpy as np
 import matplotlib
 matplotlib.use('Agg')

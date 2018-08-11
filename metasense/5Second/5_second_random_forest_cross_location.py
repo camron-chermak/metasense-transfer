@@ -1,5 +1,5 @@
 import metasense
-import data
+import metasense.data
 import os, sys
 import numpy as np
 import matplotlib

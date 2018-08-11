@@ -1,17 +1,18 @@
 import metasense
-import data
+import metasense.data
 import os, sys
 import numpy as np
 import matplotlib
 matplotlib.use('Agg')
 from matplotlib import pyplot as plt
 import sklearn
-from sklearn import linear_model
-from sklearn.linear_model import LinearRegression
+#from sklearn import linear_model
+#from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import cross_val_predict
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
+from sklearn.ensemble import RandomForestRegressor
 
 NO2 = 0
 O3 = 1
@@ -38,19 +39,10 @@ def loadSecondMatrix(timeStep, round, location, board_id, seed=0):
     mat = np.concatenate( (mat, np.expand_dims(train['absolute-humidity'].values, axis=1)), axis=1)
     for time in range(TIME_STEP):
         timeStep = time + 1 
-  #      tempDates = np.chararray((len(train['Time']), 1), itemsize=30)
-  #      for index in range(len(tempDates)):
-  #          if (index - timeStep) >= 0:
-  #              tempDates[index] = train['Time'].values[index - timeStep]
-  #          else:
-  #              tempDates[index] = "no data"
-  #      mat = np.concatenate( (mat, tempDates), axis=1)
-
 
         tempDates = train['Time'].values
         tempDates = np.expand_dims(tempDates, axis=1)
         mat = np.concatenate( (mat, tempDates), axis=1)
-
 
         temp1 = train['no2'].values 
         temp1 = np.pad( temp1, (timeStep, 0), 'constant' ) 
@@ -108,18 +100,12 @@ def loadSecondMatrix(timeStep, round, location, board_id, seed=0):
     mat = np.concatenate( (mat, np.expand_dims(test['temperature'].values, axis=1)), axis=1)
     mat = np.concatenate( (mat, np.expand_dims(test['absolute-humidity'].values, axis=1)), axis=1)
     for time in range(TIME_STEP):
-        timeStep = time + 1
-       # tempDates = np.chararray((len(test['Time']), 1), itemsize=30)
-       # for index in range(len(tempDates)):
-       #     if (index - timeStep) >= 0:
-       #         tempDates[index] = test['Time'].values[index - timeStep]
-       #     else:
-       #         tempDates[index] = "no data"
-       # mat = np.concatenate( (mat, tempDates), axis=1)
+        timeStep = time + 1 
+       
         tempDates = test['Time'].values
         tempDates = np.expand_dims(tempDates, axis=1)
         mat = np.concatenate( (mat, tempDates), axis=1)
- 
+        
         temp1 = test['no2'].values 
         temp1 = np.pad( temp1, (timeStep, 0), 'constant' ) 
         temp1 = temp1[ : (-1 * timeStep) ]  
@@ -172,7 +158,7 @@ def loadSecondMatrix(timeStep, round, location, board_id, seed=0):
 
 def second_linear_time_step( timeStep, round, location, board ):
     TIME_STEP = timeStep
-    lr = linear_model.LinearRegression()
+    rf = RandomForestRegressor(random_state=0)
     data = loadSecondMatrix( TIME_STEP, round, location, board)
     train = data[0]
     test = data[1]
@@ -184,7 +170,7 @@ def second_linear_time_step( timeStep, round, location, board ):
         trainX = np.concatenate( (trainX, train[: , (index + 1)*8 + 6 : (index + 1)*8 + 8]), axis=1)
     trainY = train[:, 4 : 6]
 
-    lr.fit(trainX, trainY)
+    rf.fit(trainX, trainY)
    
 
     testX = test[:, 1:4]
@@ -194,7 +180,7 @@ def second_linear_time_step( timeStep, round, location, board ):
         testX = np.concatenate( (testX, test[: , (index + 1)*8 + 6 : (index + 1)*8 + 8]), axis=1)
     testY = test[:, 4 : 6]
 
-    y_predict = lr.predict(testX)
+    y_predict = rf.predict(testX)
     return y_predict, testY
 
 def plot_median_linear_time_step( timeStep, round, location, board ):
@@ -239,21 +225,24 @@ def plot_median_linear_time_step( timeStep, round, location, board ):
 
 
 def plot_mean_squared_error( startTimeStep, endTimeStep, round, location, board ):
-    if not os.path.exists("my_plots/5_second/Linear" ):
-        os.mkdir( "my_plots/5_second/Linear" )
+    if not os.path.exists("my_plots/5_second/Random_Forest" ):
+        os.mkdir( "my_plots/5_second/Random_Forest" )
    
-    if not os.path.exists("my_plots/5_second/Linear/o3_mean_squared_error" ):
-        os.mkdir( "my_plots/5_second/Linear/o3_mean_squared_error" )
-        os.mkdir( "my_plots/5_second/Linear/o3_mean_squared_error/round1" )
-        os.mkdir( "my_plots/5_second/Linear/o3_mean_squared_error/round2" )
-        os.mkdir( "my_plots/5_second/Linear/o3_mean_squared_error/round3" )
+    if not os.path.exists("my_plots/5_second/Random_Forest/o3_mean_squared_error" ):
+        os.mkdir( "my_plots/5_second/Random_Forest/o3_mean_squared_error" )
+        os.mkdir( "my_plots/5_second/Random_Forest/o3_mean_squared_error/round1" )
+        os.mkdir( "my_plots/5_second/Random_Forest/o3_mean_squared_error/round2" )
+        os.mkdir( "my_plots/5_second/Random_Forest/o3_mean_squared_error/round3" )
 
-    if not os.path.exists("my_plots/5_second/Linear/no2_mean_squared_error" ):
-        os.mkdir( "my_plots/5_second/Linear/no2_mean_squared_error" )
-        os.mkdir( "my_plots/5_second/Linear/no2_mean_squared_error/round1" )
-        os.mkdir( "my_plots/5_second/Linear/no2_mean_squared_error/round2" )
-        os.mkdir( "my_plots/5_second/Linear/no2_mean_squared_error/round3" )
-    
+    if not os.path.exists("my_plots/5_second/Random_Forest/no2_mean_squared_error" ):
+        os.mkdir( "my_plots/5_second/Random_Forest/no2_mean_squared_error" )
+        os.mkdir( "my_plots/5_second/Random_Forest/no2_mean_squared_error/round1" )
+        os.mkdir( "my_plots/5_second/Random_Forest/no2_mean_squared_error/round2" )
+        os.mkdir( "my_plots/5_second/Random_Forest/no2_mean_squared_error/round3" )
+   
+    print("plotting round " + str(round) + " " + location + " Board # " + str(board) +  " ...")
+
+ 
     mino3 = 100
     mino3Index = startTimeStep
     minno2 = 100
@@ -265,80 +254,186 @@ def plot_mean_squared_error( startTimeStep, endTimeStep, round, location, board 
         data = second_linear_time_step(index, round, location, board)
         mseno2 = mean_squared_error( (data[PREDICT])[:, NO2], (data[ACTUAL])[:, NO2] )
         mseo3 = mean_squared_error( (data[PREDICT])[:, O3], (data[ACTUAL])[:, O3] )
-        #if index == startTimeStep:
-        #    minno2 = mseno2
-        #    mino3 = mseo3
-        #elif mseno2 < minno2:
-        #    minno2 = mseno2
-        #    minno2Index = index
-        #elif mseo3 < mino3:
-        #    mino3 = mseo3
-        #    mino3Index = index
         no2timeStepErrors.append( mseno2 )
         o3timeStepErrors.append( mseo3 )
 
-    minno2 = min(no2timeStepErrors)
-    minno2Index = no2timeStepErrors.index(minno2)
     mino3 = min(o3timeStepErrors)
+    minno2 = min(no2timeStepErrors)
     mino3Index = o3timeStepErrors.index(mino3)
-
-    print( "min no2 error: " + str(minno2) + " at time step of " + str(minno2Index)) 
-    print( "min o3 error: " + str(mino3) + " at time step of " + str(mino3Index)) 
-    plt.plot( range(startTimeStep, endTimeStep + 1), no2timeStepErrors)
-    #plt.plot( range(0, 100), range(0, 100) )
-    #plt.xlim( 0, 90 )
-    #plt.ylim( 0, 90 )
+    minno2Index = no2timeStepErrors.index(minno2)
+    print( "min no2 error: " + str(minno2) + " at time step of " + str(minno2Index + startTimeStep)) 
+    print( "min o3 error: " + str(mino3) + " at time step of " + str(mino3Index + startTimeStep)) 
+    plt.plot( range(startTimeStep, endTimeStep + 1), no2timeStepErrors) 
     plt.xlabel('time step')
     plt.ylabel('no2 mean squared error') 
     plt.title( "no2 mean squared error: " + str(location) + " board " + str(board) + " steps: " + str(startTimeStep) + " to " + str(endTimeStep) )  
-    plt.savefig("my_plots/5_second/Linear/" + "no2_mean_squared_error" + "/round" + str(round) + "/" + str(round) + "-" + location + "-" + str(board) + "_" + str(startTimeStep) + "-" + str(endTimeStep) + ".png") 
+    plt.savefig("my_plots/5_second/Random_Forest/" + "no2_mean_squared_error" + "/round" + str(round) + "/" + str(round) + "-" + location + "-" + str(board) + "_" + str(startTimeStep) + "-" + str(endTimeStep) + ".png") 
     plt.clf() 
 
-    plt.plot( range(startTimeStep, endTimeStep + 1), o3timeStepErrors)
-    #plt.plot( range(0, 100), range(0, 100) )
-    #plt.xlim( 0, 90 )
-    #plt.ylim( 0, 90 )
+    plt.plot( range(startTimeStep, endTimeStep + 1), o3timeStepErrors) 
     plt.xlabel('time step')
     plt.ylabel('o3 mean squared error') 
     plt.title( "o3 mean squared error: " + str(location) + " board " + str(board) + " steps: " + str(startTimeStep) + " to " + str(endTimeStep) )  
-    plt.savefig("my_plots/5_second/Linear/" + "o3_mean_squared_error" + "/round" + str(round) + "/" + str(round) + "-" + location + "-" + str(board) + "_" + str(startTimeStep) + "-" + str(endTimeStep) + ".png") 
+    plt.savefig("my_plots/5_second/Random_Forest/" + "o3_mean_squared_error" + "/round" + str(round) + "/" + str(round) + "-" + location + "-" + str(board) + "_" + str(startTimeStep) + "-" + str(endTimeStep) + ".png") 
     plt.clf() 
+
+    return minno2Index, mino3Index, minno2, mino3
     
  
 
-plot_mean_squared_error(0, 20, 1, 'donovan', 17)
-plot_mean_squared_error(0, 10, 3, 'elcajon', 18)
-#plot_mean_squared_error(0, 100, 1, 'elcajon', 11)
+start = 2
+end = 2
+minno2Steps = []
+mino3Steps = []
+minno2 = []
+mino3 = []
 
-#for time in range(4):
-   # plot_median_linear_time_step( time, 1, 'donovan', 17 ) 
-   # plot_median_linear_time_step( time, 1, 'donovan', 19 )
-   # plot_median_linear_time_step( time, 1, 'donovan', 21 )
-   # plot_median_linear_time_step( time, 1, 'elcajon', 11 )
-   # plot_median_linear_time_step( time, 1, 'elcajon', 12 )
-   # plot_median_linear_time_step( time, 1, 'elcajon', 13 )
-   # plot_median_linear_time_step( time, 1, 'shafter', 15 )
-   # plot_median_linear_time_step( time, 1, 'shafter', 18 )
-   # plot_median_linear_time_step( time, 1, 'shafter', 20 )
-   # plot_median_linear_time_step( time, 2, 'donovan', 15 )
-   # plot_median_linear_time_step( time, 2, 'donovan', 18 )
-   # plot_median_linear_time_step( time, 2, 'donovan', 20 )
-   # plot_median_linear_time_step( time, 2, 'elcajon', 17 )
-   # plot_median_linear_time_step( time, 2, 'elcajon', 19 )
-   # plot_median_linear_time_step( time, 2, 'elcajon', 21 )
-   # plot_median_linear_time_step( time, 2, 'shafter', 11 )
-   # plot_median_linear_time_step( time, 2, 'shafter', 12 )
-   # plot_median_linear_time_step( time, 2, 'shafter', 13 )
-   # plot_median_linear_time_step( time, 3, 'donovan', 11 )
-   # plot_median_linear_time_step( time, 3, 'donovan', 12 )
-   # plot_median_linear_time_step( time, 3, 'donovan', 13 )
-   # plot_median_linear_time_step( time, 3, 'elcajon', 15 )
-   # plot_median_linear_time_step( time, 3, 'elcajon', 18 )
-   # plot_median_linear_time_step( time, 3, 'elcajon', 20 )
-   # plot_median_linear_time_step( time, 3, 'shafter', 17 ) 
-   # plot_median_linear_time_step( time, 3, 'shafter', 19 ) 
-   # plot_median_linear_time_step( time, 3, 'shafter', 21 ) 
+minIndex = plot_mean_squared_error( start, end, 1, 'donovan', 17 )
+minno2Steps.append( minIndex[NO2] )
+mino3Steps.append( minIndex[O3] ) 
+minno2.append( minIndex[2] )
+mino3.append( minIndex[3] ) 
+minIndex = plot_mean_squared_error( start, end, 1, 'donovan', 19 )
+minno2Steps.append( minIndex[NO2] )
+mino3Steps.append( minIndex[O3] ) 
+minno2.append( minIndex[2] )
+mino3.append( minIndex[3] ) 
+minIndex = plot_mean_squared_error( start, end, 1, 'donovan', 21 )
+minno2Steps.append( minIndex[NO2] )
+mino3Steps.append( minIndex[O3] ) 
+minno2.append( minIndex[2] )
+mino3.append( minIndex[3] ) 
+minIndex = plot_mean_squared_error( start, end, 1, 'elcajon', 11 )
+minno2Steps.append( minIndex[NO2] )
+mino3Steps.append( minIndex[O3] ) 
+minno2.append( minIndex[2] )
+mino3.append( minIndex[3] ) 
+minIndex = plot_mean_squared_error( start, end, 1, 'elcajon', 12 )
+minno2Steps.append( minIndex[NO2] )
+mino3Steps.append( minIndex[O3] ) 
+minno2.append( minIndex[2] )
+mino3.append( minIndex[3] ) 
+minIndex = plot_mean_squared_error( start, end, 1, 'elcajon', 13 )
+minno2Steps.append( minIndex[NO2] )
+mino3Steps.append( minIndex[O3] ) 
+minno2.append( minIndex[2] )
+mino3.append( minIndex[3] ) 
+minIndex = plot_mean_squared_error( start, end, 1, 'shafter', 15 )
+minno2Steps.append( minIndex[NO2] )
+mino3Steps.append( minIndex[O3] ) 
+minno2.append( minIndex[2] )
+mino3.append( minIndex[3] ) 
+minIndex = plot_mean_squared_error( start, end, 1, 'shafter', 18 )
+minno2Steps.append( minIndex[NO2] )
+mino3Steps.append( minIndex[O3] ) 
+minno2.append( minIndex[2] )
+mino3.append( minIndex[3] ) 
+minIndex = plot_mean_squared_error( start, end, 1, 'shafter', 20 )
+minno2Steps.append( minIndex[NO2] )
+mino3Steps.append( minIndex[O3] ) 
+minno2.append( minIndex[2] )
+mino3.append( minIndex[3] ) 
+minIndex = plot_mean_squared_error( start, end, 2, 'donovan', 15 )
+minno2Steps.append( minIndex[NO2] )
+mino3Steps.append( minIndex[O3] ) 
+minno2.append( minIndex[2] )
+mino3.append( minIndex[3] ) 
+minIndex = plot_mean_squared_error( start, end, 2, 'donovan', 18 )
+minno2Steps.append( minIndex[NO2] )
+mino3Steps.append( minIndex[O3] ) 
+minno2.append( minIndex[2] )
+mino3.append( minIndex[3] ) 
+minIndex = plot_mean_squared_error( start, end, 2, 'donovan', 20 )
+minno2Steps.append( minIndex[NO2] )
+mino3Steps.append( minIndex[O3] ) 
+minno2.append( minIndex[2] )
+mino3.append( minIndex[3] ) 
+minIndex = plot_mean_squared_error( start, end, 2, 'elcajon', 17 )
+minno2Steps.append( minIndex[NO2] )
+mino3Steps.append( minIndex[O3] ) 
+minno2.append( minIndex[2] )
+mino3.append( minIndex[3] ) 
+minIndex = plot_mean_squared_error( start, end, 2, 'elcajon', 19 )
+minno2Steps.append( minIndex[NO2] )
+mino3Steps.append( minIndex[O3] ) 
+minno2.append( minIndex[2] )
+mino3.append( minIndex[3] ) 
+minIndex = plot_mean_squared_error( start, end, 2, 'elcajon', 21 )
+minno2Steps.append( minIndex[NO2] )
+mino3Steps.append( minIndex[O3] ) 
+minno2.append( minIndex[2] )
+mino3.append( minIndex[3] ) 
+minIndex = plot_mean_squared_error( start, end, 2, 'shafter', 11 )
+minno2Steps.append( minIndex[NO2] )
+mino3Steps.append( minIndex[O3] ) 
+minno2.append( minIndex[2] )
+mino3.append( minIndex[3] ) 
+minIndex = plot_mean_squared_error( start, end, 2, 'shafter', 12 )
+minno2Steps.append( minIndex[NO2] )
+mino3Steps.append( minIndex[O3] ) 
+minno2.append( minIndex[2] )
+mino3.append( minIndex[3] ) 
+minIndex = plot_mean_squared_error( start, end, 2, 'shafter', 13 )
+minno2Steps.append( minIndex[NO2] )
+mino3Steps.append( minIndex[O3] ) 
+minno2.append( minIndex[2] )
+mino3.append( minIndex[3] ) 
+minIndex = plot_mean_squared_error( start, end, 3, 'donovan', 11 )
+minno2Steps.append( minIndex[NO2] )
+mino3Steps.append( minIndex[O3] ) 
+minno2.append( minIndex[2] )
+mino3.append( minIndex[3] ) 
+minIndex = plot_mean_squared_error( start, end, 3, 'donovan', 12 )
+minno2Steps.append( minIndex[NO2] )
+mino3Steps.append( minIndex[O3] ) 
+minno2.append( minIndex[2] )
+mino3.append( minIndex[3] ) 
+minIndex = plot_mean_squared_error( start, end, 3, 'donovan', 13 )
+minno2Steps.append( minIndex[NO2] )
+mino3Steps.append( minIndex[O3] ) 
+minno2.append( minIndex[2] )
+mino3.append( minIndex[3] ) 
+minIndex = plot_mean_squared_error( start, end, 3, 'elcajon', 15 )
+minno2Steps.append( minIndex[NO2] )
+mino3Steps.append( minIndex[O3] ) 
+minno2.append( minIndex[2] )
+mino3.append( minIndex[3] ) 
+minIndex = plot_mean_squared_error( start, end, 3, 'elcajon', 18 )
+minno2Steps.append( minIndex[NO2] )
+mino3Steps.append( minIndex[O3] ) 
+minno2.append( minIndex[2] )
+mino3.append( minIndex[3] ) 
+minIndex = plot_mean_squared_error( start, end, 3, 'elcajon', 20 )
+minno2Steps.append( minIndex[NO2] )
+mino3Steps.append( minIndex[O3] ) 
+minno2.append( minIndex[2] )
+mino3.append( minIndex[3] ) 
+minIndex = plot_mean_squared_error( start, end, 3, 'shafter', 17 )
+minno2Steps.append( minIndex[NO2] )
+mino3Steps.append( minIndex[O3] ) 
+minno2.append( minIndex[2] )
+mino3.append( minIndex[3] ) 
+minIndex = plot_mean_squared_error( start, end, 3, 'shafter', 19 )
+minno2Steps.append( minIndex[NO2] )
+mino3Steps.append( minIndex[O3] ) 
+minno2.append( minIndex[2] )
+mino3.append( minIndex[3] ) 
+minIndex = plot_mean_squared_error( start, end, 3, 'shafter', 21 )
+minno2Steps.append( minIndex[NO2] )
+mino3Steps.append( minIndex[O3] ) 
+minno2.append( minIndex[2] )
+mino3.append( minIndex[3] ) 
 
-
-
+print( "o3 as follows" )
+print(mino3Steps)
+print( "mean = " + str(np.mean(mino3Steps)) )
+print( "median = " + str(np.median(mino3Steps)) )
+print( "mean = " + str(np.mean(mino3)) )
+print( "median = " + str(np.median(mino3)) )
+print( "no2 as follows" )
+print(minno2Steps)
+print( "mean = " + str(np.mean(minno2Steps)) )
+print( "median = " + str(np.median(minno2Steps)) )
+print( "mean = " + str(np.mean(minno2)) )
+print( "median = " + str(np.median(minno2)) )
 
