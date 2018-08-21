@@ -213,7 +213,7 @@ def plot_median_linear_time_step( timeStep, round, location, board ):
 
 
 
-def mean_squared_error_3Point( round, location, board ):
+def mean_squared_error_2Steps( round, location, board ):
     if not os.path.exists("my_plots/5_second/Random_Forest" ):
         os.mkdir( "my_plots/5_second/Random_Forest" )
    
@@ -242,7 +242,7 @@ def mean_squared_error_3Point( round, location, board ):
 
 no2s = []
 o3s = []
-f1=open('2Steps.txt', 'w+')
+f1=open('3Point.txt', 'w+')
 data = mean_squared_error_2Steps( 1, 'donovan', 17 )
 no2s.append( data[0] )
 o3s.append( data[1] )

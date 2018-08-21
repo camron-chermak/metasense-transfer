@@ -1,0 +1,139 @@
+donovan round 1 board 17
+
+mse no2 = 0.1288785900275932
+
+mse o3 = 0.46670553029419753
+
+donovan round 1 board 21
+
+mse no2 = 0.5132075911727837
+
+mse o3 = 1.189840959812391
+
+el cajon round 1 board 11
+
+mse no2 = 0.21151664940833217
+
+mse o3 = 2.0826136607858077
+
+el cajon round 1 board 12
+
+mse no2 = 0.23434043855707298
+
+mse o3 = 1.2567199395632662
+
+el cajon round 1 board 13
+
+mse no2 = 0.31701964845098307
+
+mse o3 = 2.1020481084214158
+
+shafter round 1 board 18
+
+mse no2 = 0.35379085582757896
+
+mse o3 = 0.6171161330822347
+
+shafter round 1 board 20
+
+mse no2 = 0.41417207499549313
+
+mse o3 = 1.4059819121447026
+
+donovan round 2 board 18
+
+mse no2 = 1.8415648995099214
+
+mse o3 = 2.3063844324186267
+
+donovan round 2 board 20
+
+mse no2 = 2.1881594728048612
+
+mse o3 = 2.900870819099916
+
+el cajon round 2 board 17
+
+mse no2 = 0.46854888820340374
+
+mse o3 = 1.8421607906467554
+
+el cajon round 2 board 21
+
+mse no2 = 0.7159514047627686
+
+mse o3 = 3.0481707444899997
+
+shafter round 2 board 11
+
+mse no2 = 1.0775516274543273
+
+mse o3 = 2.637266320161833
+
+shafter round 2 board 12
+
+mse no2 = 1.129910083603158
+
+mse o3 = 1.9035827629681297
+
+shafter round 2 board 13
+
+mse no2 = 1.3045572321292487
+
+mse o3 = 2.9596919442392693
+
+donovan round 3 board 11
+
+mse no2 = 2.6392394094445124
+
+mse o3 = 2.4575262243140155
+
+donovan round 3 board 12
+
+mse no2 = 2.172749432583386
+
+mse o3 = 2.5763898630680147
+
+donovan round 3 board 13
+
+mse no2 = 3.465513922014006
+
+mse o3 = 2.6689447851599466
+
+el cajon round 3 board 18
+
+mse no2 = 0.8225055325129242
+
+mse o3 = 1.9519871417555292
+
+el cajon round 3 board 20
+
+mse no2 = 0.8887568688212546
+
+mse o3 = 1.7534558086822263
+
+shafter round 3 board 17
+
+mse no2 = 2.086460249149936
+
+mse o3 = 3.6805677447906846
+
+shafter round 3 board 21
+
+mse no2 = 5.305808877915401
+
+mse o3 = 2.684832010148961
+
+
+o3 as follows
+
+mean = 2.1187075064784726
+
+median = 2.1020481084214158
+
+
+no2 as follows
+
+mean = 1.3466763690166164
+
+median = 0.8887568688212546
