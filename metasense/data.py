@@ -160,72 +160,10 @@ def loadMatrix(timeStep, round, location, board_id, root_dir=Path('data/final'),
 
 
 def load5Second(round, location, board_id, root_dir='Data5Second', seed=0):
-    path = root_dir + "/" + location + "_Round" + str(round) + "/Board" + str(board_id) + "_ReadsFromLog.csv"
-    pathEPA = "epaData/epa-" + location + ".csv"
-    data = pd.read_csv(path, parse_dates=True) 
-    epaData = pd.read_csv(pathEPA, parse_dates=True)
-    data['no2'] = data['No2AmV'] - data['No2WmV']
-    data['o3']  = data['OxAmV']  - data['OxWmV']
-    data['co']  = data['CoAmV']  - data['CoWmV'] 
-    data['temperature'] = data['Hum_cT']
-    T = data['temperature'] + 273.15
-    data['humidity'] = data['Hum_pc']
-    data['absolute-humidity'] = data['humidity'] / 100 * np.exp(
-        54.842763 - 6763.22 / T - 4.210 * np.log(T) + 0.000367 * T +
-        np.tanh(0.0415 * (T - 218.8)) * (53.878 - 1331.22 / T
-                                         - 9.44523 * np.log(T) + 0.014025 * T)) / 1000
-    data['board'] = board_id
-    data['location'] = location
-    data['round'] = round  
-    data['epa-o3'] = -1
-    data['epa-no2'] = -1
-  
-   
-  
-    #for index in range(len(epaData)):
-        #print(index)
-        #print(epaData['datetime'][index])
-        #if ( epaData['datetime'][index] == '%d-%b-%Y %H:%M' ):
-        #    print('true')
-        #epaData.set_value(index, 'abs-time', datetime.datetime.strptime((epaData['datetime'])[index], '%m-%d-% %H:%M'))
-        #epaData.set_value(index, 'abs-time', epaData['datetime'][index].strftime('%m-%d-%Y %H:%M'))
-    
-   # for index in range(len(data)):
-    #    data['abs-time'][index] = datetime.datetime.strptime(data['Time'][index], '%m/%d/%Y %I:%M:%S %p')  
-  
 
-    #for index in range(len(data)):
-    #for index in range(8400):
-    #    print(index)  
-        #if not pd.isna((epaData[epaData['datetime'] == data['Time'][index]])['epa-o3']).values:  
-    #print("start")
-   # data = data.reset_index(drop=True)
-    #epaData = epaData.reset_index(drop=True)
-    #data['epa-o3'] = 1000*(epaData[epaData['datetime'] == data['Time']])['epa-o3'] 
-        #if not pd.isna((epaData[epaData['datetime'] == data['Time'][index]])['epa-no2']).values:  
-            #data.set_value(index, 'epa-no2', 1000*(epaData[epaData['datetime'] == data['Time'][index]])['epa-no2']) 
-       # data.at['epa-no2', index] =  1000*(epaData[epaData['datetime'] == data['Time'][index]])['epa-no2'].values 
-    #print("finish")
+    path = "match_5Second/" + location + "/Round" + str(round) + "/match_round_" + str(round) + "_" + location + "_" + str(board_id) + ".csv"
+    data = pd.read_csv(path, parse_dates=True)   
 
-    epaNo2 = epaData['epa-no2']
-    epaO3 = epaData['epa-o3']
-    epaTime = epaData['datetime']
-    newNo2 = data['epa-no2'].values
-    newNo2 = np.expand_dims(newNo2, axis=1) 
-    newO3 = data['epa-o3'].values
-    newO3 = np.expand_dims(newO3, axis=1) 
-    
-    for index in range(len(data)):
-        print(index)
-        if not np.isnan(epaNo2[np.where(epaTime == data['Time'][index])[0]]).values: 
-            newNo2[index] = 1000*epaNo2[np.where(epaTime == data['Time'][index])[0]]    
-        if not np.isnan(epaO3[np.where(epaTime == data['Time'][index])[0]]).values: 
-            newO3[index] = 1000*epaO3[np.where(epaTime == data['Time'][index])[0]]     
-        #print(epaTime.index(data['Time'][index]))
-    data['epa-no2'] = newNo2
-    data['epa-o3'] = newO3
-    data = data[data['epa-no2'] != -1]
-    data = data[data['epa-o3'] != -1]
-    data.to_csv('don.csv') 
     train, test = train_test_split(data, test_size=0.2, random_state=seed)
-    return train, test, epaData 
+ 
+    return train, test 
